@@ -1,0 +1,50 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            int N = sc.nextInt();
+            String[] cards = new String[N];
+            for(int i = 0; i < cards.length; i++){
+                cards[i] = sc.next();
+            }
+
+            Deque<String> dq1 = new ArrayDeque<>();
+            Deque<String> dq2 = new ArrayDeque<>();
+
+            int mid = (N + 1) / 2;
+
+            for(int i = 0; i < mid; i++) {
+                dq1.addLast(cards[i]);
+            }
+            for(int i = mid; i < N; i++) {
+                dq2.addLast(cards[i]);
+            }
+
+            Deque<String> shuffle = new ArrayDeque<>();
+
+            while(!dq1.isEmpty() || !dq2.isEmpty()) {
+                if(!dq1.isEmpty())
+                    shuffle.addLast(dq1.pollFirst());
+                if(!dq2.isEmpty())
+                    shuffle.addLast(dq2.pollFirst());
+            }
+
+            System.out.print("#" + test_case + " ");
+            for(int i = 0; i < cards.length; i++){
+                System.out.print(shuffle.pollFirst() + " ");
+            }
+            System.out.println();
+		}
+	}
+}
