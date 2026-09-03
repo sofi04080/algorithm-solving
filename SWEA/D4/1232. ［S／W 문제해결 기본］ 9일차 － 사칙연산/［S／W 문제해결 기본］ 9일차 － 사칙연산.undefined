@@ -1,0 +1,115 @@
+
+import java.util.*;
+import java.io.*;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		for(int test_case = 1; test_case <= 10; test_case++)
+		{
+			// 입력 받을 줄
+            int N = Integer.parseInt(br.readLine());
+            String[] nodes = new String[N];
+            for (int i = 0; i < N; i++) {
+                nodes[i] = br.readLine();
+            }
+
+            Tree tree = new Tree();
+
+            for (String node : nodes) {
+                String[] elements = node.split(" ");
+                int p = Integer.parseInt(elements[0]);
+                tree.insert(p, toNode(elements));
+            }
+
+            System.out.println("#" + test_case + " " + tree.inOrder(1));
+		}
+	}
+        private static TreeNode toNode(String[] elements) {
+        int left = 0;
+        int right = 0;
+        String val = elements[1];
+
+        if (elements.length > 3) {
+            left = Integer.parseInt(elements[2]);
+            right = Integer.parseInt(elements[3]);
+            return new TreeNode(val, left, right);
+        }
+        if (elements.length > 2) {
+            left = Integer.parseInt(elements[2]);
+            return new TreeNode(val, left);
+        }
+        return new TreeNode(val);
+    }
+
+    static class TreeNode {
+        String val;
+        int right;
+        int left;
+
+        TreeNode(String val) {
+            this.val = val;
+        }
+
+        TreeNode(String val, int left) {
+            this.val = val;
+            this.left = left;
+        }
+
+        TreeNode(String val, int left, int right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    static class Tree {
+        Map<Integer, TreeNode> tree = new HashMap<>();
+
+        // 트리 만들기
+        void insert(int p, TreeNode node) {
+            tree.put(p, node);
+        }
+
+        // 후위순회하며 결과값 반환
+        int inOrder(int p) {
+            if (p == 0 || !tree.containsKey(p)) {
+                return 0;
+            }
+
+            TreeNode node = tree.get(p);
+
+            int l = inOrder(node.left);
+            int r = inOrder(node.right);
+
+            String val = node.val;
+
+            int result = 0;
+
+            // 연산자 노드면 연산하여 결과값 반환
+            if(node.val.equals("-") || node.val.equals("+") || node.val.equals("/") ||
+                    node.val.equals("*")) {
+                switch (node.val.charAt(0)){
+                    case '-':
+                        result = l - r;
+                        break;
+                    case '+':
+                        result = l + r;
+                        break;
+                    case '/':
+                        result = l / r;
+                        break;
+                    case '*':
+                        result = l * r;
+                        break;
+                }
+                return result;
+            }
+
+            // 아니면 현재 값 이후 탐색에 반환
+            return Integer.parseInt(val);
+        }
+    }
+}
