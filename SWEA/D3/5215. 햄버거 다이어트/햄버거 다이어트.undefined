@@ -1,0 +1,61 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+    static int N;
+    static int L;
+    static int[][] ingredients;
+    static List<Integer> sums;
+    static boolean[] exist;
+    
+    public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            N = sc.nextInt();
+            L = sc.nextInt();
+
+            ingredients = new int[N][N];
+            for(int i = 0; i < N; i++) {
+                for(int j = 0; j < 2; j++) {
+                    ingredients[i][j] = sc.nextInt();
+                }
+            }
+
+            sums = new ArrayList<>();
+            exist = new boolean[N];
+            getRecipe(0);
+
+            Collections.sort(sums);
+
+            System.out.println("#" + test_case + " " + sums.get(sums.size() - 1));
+		}
+	}
+    static void getRecipe(int idx) {
+        int score = 0;
+        int cal = 0;
+        if (idx == N) {
+            for (int i = 0; i < N; i++) {
+                if (exist[i]) {
+                    score += ingredients[i][0];
+                    cal += ingredients[i][1];
+                }
+            }
+            if (cal <= L)
+               sums.add(score);
+            return;
+        }
+
+        exist[idx] = true;
+        getRecipe(idx + 1);
+        exist[idx] = false;
+        getRecipe(idx + 1);
+    }
+}
