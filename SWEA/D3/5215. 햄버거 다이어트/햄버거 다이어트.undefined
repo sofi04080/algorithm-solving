@@ -7,9 +7,8 @@ class Solution
     static int N;
     static int L;
     static int[][] ingredients;
-    static List<Integer> sums;
     static boolean[] exist;
-    
+    static int max;
     public static void main(String args[]) throws Exception
 	{
 
@@ -29,13 +28,11 @@ class Solution
                 }
             }
 
-            sums = new ArrayList<>();
             exist = new boolean[N];
+            max = 0;
             getRecipe(0);
 
-            Collections.sort(sums);
-
-            System.out.println("#" + test_case + " " + sums.get(sums.size() - 1));
+            System.out.println("#" + test_case + " " + max);
 		}
 	}
     static void getRecipe(int idx) {
@@ -48,8 +45,8 @@ class Solution
                     cal += ingredients[i][1];
                 }
             }
-            if (cal <= L)
-               sums.add(score);
+            if (cal <= L && max < score)
+               max = score;
             return;
         }
 
