@@ -1,0 +1,64 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            int N = sc.nextInt();
+            int[] x = new int[N+2];
+            int[] y = new int[N+2];
+            // 고객 인덱스 저장용
+            int[] customers = new int[N];
+
+            for(int i = 0; i < N+2; i++) {
+                if(i < N)
+                    customers[i] = i;
+                x[i] = sc.nextInt();
+                y[i] = sc.nextInt();
+            }
+
+            // N 명의 고객을 정렬하는 경우의 수
+            List<Integer> ans = new ArrayList<>();
+            permutation(N, 0, customers, new int[N], 0, ans, x, y);
+            Collections.sort(ans);
+            
+            System.out.println("#" + test_case + " " + ans.get(0));     
+		}
+	}
+    static void permutation(int N, int depth, int[] customers, int[] result,
+                            int visited, List<Integer> list, int[] x, int[] y) {
+        // Base
+        if (depth == N) {
+            int distanceSum = 0;
+            for (int j = 0; j < result.length - 1; j++) {
+                int c1 = result[j] + 2;
+                int c2 = result[j + 1] + 2;
+                int distance = Math.abs(x[c1] - x[c2]) + Math.abs(y[c1] - y[c2]);
+                distanceSum += distance;
+            }
+
+            int company = Math.abs(x[0] - x[result[0] + 2]) + Math.abs(y[0] - y[result[0] + 2]);
+            int home = Math.abs(x[1] - x[result[result.length - 1] + 2]) + Math.abs(y[1] - y[result[result.length - 1] + 2]);
+
+            distanceSum = distanceSum + company + home;
+            list.add(distanceSum);
+            return;
+        }
+
+        //Recursion
+        for (int i = 0; i < N; i++) {
+            if ((visited & (1 << i)) != 0) continue;
+            result[depth] = customers[i];
+            permutation(N, depth + 1, customers, result, visited | (1 << i), list, x, y);
+        }
+    }
+}
