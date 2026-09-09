@@ -1,0 +1,93 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+    static int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+    static int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
+    static boolean[][] visited;
+    static int N;
+    static char[][] field;
+    
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            N = sc.nextInt();
+            field = new char[N][N];
+
+            int clicks = 0;
+
+            for(int i = 0; i < N; i++) {
+                String nextLine = sc.next();
+                field[i] = nextLine.toCharArray();
+            }
+
+            int[][] mineCount = new int[N][N];
+
+            for(int i = 0; i < N; i++) {
+                for(int j =0; j < N; j++) {
+                    int count = 0;
+                    // 빈 칸 8방탐색 해서 주변 지뢰 개수 저장하기
+                    for(int k = 0; k < dr.length; k++) {
+                        int r = i + dr[k];
+                        int c = j + dc[k];
+
+                        if( r >= 0 && r < N && c >= 0 && c < N) {
+                            if(field[r][c] =='*')
+                                count++;
+                        }
+                    }
+                    mineCount[i][j] = count;
+                }
+            }
+
+            // 배열 순회해서 주변 지뢰 개수 0인 칸 찾기
+            visited = new boolean[N][N];
+
+            for(int i = 0; i < N; i++)
+                for (int j = 0; j < N; j++) {
+                    if (field[i][j] != '*' && mineCount[i][j] == 0 && !visited[i][j]) {
+                        clicks++;
+                        // BFS 탐색
+                        bfs(i, j, mineCount);
+                    }
+                }
+
+            for(int i = 0; i < N; i++)
+                for(int j =0; j < N; j++){
+                    if(field[i][j] != '*' && !visited[i][j])
+                        clicks++;
+                }
+            System.out.println("#" + test_case + " " + clicks);
+		}
+	}
+    
+    static void bfs(int r, int c, int[][] mineCount) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.add(new int[] {r, c});
+        visited[r][c] = true;
+
+        while(!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int cr = current[0];
+            int cc = current[1];
+
+            for(int i = 0; i < dr.length; i++) {
+                int nr = cr + dr[i];
+                int nc = cc + dc[i];
+                if( nr >= 0 && nr < N && nc >= 0 && nc < N &&
+                        !visited[nr][nc] && field[nr][nc] != '*') {
+                    visited[nr][nc] = true;
+                    if(mineCount[nr][nc] == 0)
+                        queue.add(new int[] {nr, nc});
+                }
+            }
+        }
+    }    
+}
