@@ -1,0 +1,73 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+    static int N;
+    static int[][] cheese;
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
+	public static void main(String args[]) throws Exception
+	{
+        Scanner sc = new Scanner(System.in);
+        int T;
+        T = sc.nextInt();
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+			N = sc.nextInt();
+            cheese = new int[N][N];
+
+            int max = 0;
+            int ans = 1;
+
+            for(int i = 0; i < N ; i++) {
+                for(int j = 0; j < N; j++) {
+                    cheese[i][j] = sc.nextInt();
+                    max = Math.max(cheese[i][j], max);
+                }
+            }
+
+            // 입력 받으면서 최대값 찾아서 그 이상으로 반복문 안 돌리기
+            for(int day = 1; day < max; day++) {
+                boolean[][] eat = new boolean[N][N];
+                for(int i = 0; i < N; i++) {
+                    for(int j = 0; j < N; j++) {
+                        if(cheese[i][j] <= day)
+                            eat[i][j] = true;
+                    }
+                }
+                int count = 0; // day의 치즈 덩어리 수
+                // 좌표값 저장
+                Queue<int[]> q = new ArrayDeque<>();
+                for(int i = 0; i < N; i++) {
+                    for(int j = 0; j < N; j++) {
+                        // 행 우선순회 하며 남은 치즈 덩어리 개수 확인
+                        if(eat[i][j]) continue;
+
+                        q.add(new int[] {i, j});
+                        eat[i][j] = true;
+
+                        while(!q.isEmpty()) {
+                            int[] curr = q.poll();
+                            // 덩어리는 4방향 인접이면 한 덩어리로 간주
+                            for(int d = 0; d < 4; d++) {
+                                int nr = curr[0] + dr[d];
+                                int nc = curr[1] + dc[d];
+
+                                if(nr < 0 || nr >=N || nc <0 || nc >= N) continue;
+                                if(eat[nr][nc]) continue;
+
+                                q.add(new int[] {nr, nc});
+                                eat[nr][nc] = true;
+                            }
+                        }
+                        count++;
+                    }
+                }
+                if(ans < count) ans = count;
+            }
+            System.out.println("#" + test_case + " " + ans);
+		}
+	}
+}
