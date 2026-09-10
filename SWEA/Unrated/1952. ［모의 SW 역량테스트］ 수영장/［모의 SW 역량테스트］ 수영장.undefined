@@ -1,0 +1,58 @@
+
+import java.util.*;
+
+class Solution
+{
+	static int d, m1, m3 ,y; // 일일, 한달, 세달, 연간
+	static int[] month; // 각 달의 이용 계획
+	static int ans; // 최소비용     
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+			d = sc.nextInt();
+			m1 = sc.nextInt();
+			m3 = sc.nextInt();
+			y = sc.nextInt();
+			
+			month = new int[13]; // 1~12월 맞게 [0] 인덱스는 총합
+			
+			for(int i = 1; i < 13; i++) {
+				month[i] = sc.nextInt();
+				month[0] += month[i];
+			} 
+			
+//			ans = Integer.MAX_VALUE; // 21억~...
+			
+			ans =  y; // 1년권으로 초기화
+			swim(1, 0);
+			
+			System.out.println("#" + test_case + " " + ans);
+				
+
+		}
+	}
+    // 이용권 고르는 달 m
+	// 지금까지 누적 요금 fee
+	private static void swim(int m, int fee) {
+		// 백트래킹
+		// 부분해 fee 가 ans 보다 커버리면 취소 (최솟값 찾아야 하므로)
+		if(fee > ans) return;
+		// 종료조건
+		if(m > 12) {
+			ans = Math.min(ans, fee); // 최소값 갱신 
+			return;
+		}
+		
+		// 한 달에 1일권, 1달권, 3달권 사용하는 경우		
+		// 재귀 호출 부분
+		// 1일권과 한달권 중 더 작은 값만 재귀로 넘기기
+		swim(m + 1, fee + Math.min(m1, d*month[m]));
+		swim(m + 3, fee + m3); // 세달권
+		
+	}
+}
