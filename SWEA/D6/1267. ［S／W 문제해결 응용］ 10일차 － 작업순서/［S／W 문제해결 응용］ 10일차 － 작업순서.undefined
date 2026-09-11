@@ -1,0 +1,56 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int T = 10;
+		
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            // 주어진 정점과 간선 개수
+            int V = sc.nextInt();
+            int E = sc.nextInt();
+
+            // 인접 리스트 선언 및 초기화
+            List<List<Integer>> adjList = new ArrayList<>();
+            for (int i = 0; i < V + 1; i++) {
+                adjList.add(new ArrayList<>());
+            }
+
+            // 진입 차수 저장 배열
+            int[] inDegree = new int[V + 1];
+
+            for (int i = 0; i < E; i++) {
+                int from = sc.nextInt();
+                int to = sc.nextInt();
+                adjList.get(from).add(to);
+                inDegree[to]++;
+            }
+
+            Queue<Integer> q = new ArrayDeque<>();
+
+            System.out.print("#" + test_case + " ");
+            for (int i = 1; i < V + 1; i++)
+                if (inDegree[i] == 0) q.add(i);
+
+            while (!q.isEmpty()) {
+                int curr = q.poll();
+                
+                System.out.print(curr + " ");
+                
+                for(int next : adjList.get(curr)) {
+                    inDegree[next]--;
+
+                    if(inDegree[next] == 0)
+                        q.add(next);
+                }
+            }
+            
+            System.out.println();
+		}
+	}
+}
