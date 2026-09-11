@@ -1,0 +1,107 @@
+
+import java.util.*;
+
+public class Solution {
+	static int N, minTime;
+	static List<int[]> people, stairs;
+	static List<Integer> A, B;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+        
+        for(int test_case = 1; test_case <= T; test_case++) {
+        	N = sc.nextInt();
+        	int[][] map = new int[N][N];
+        	
+        	for(int i =0 ; i < N; i++) {
+        		for(int j = 0; j < N; j++) {
+        			map[i][j] = sc.nextInt();
+        		}
+        	}
+        	
+        	people = new ArrayList<>();
+        	stairs = new ArrayList<>();
+        	A = new ArrayList<>();
+			B = new ArrayList<>();
+            
+        	for(int i =0 ; i < N; i++) {
+        		for(int j = 0; j < N; j++) {
+        			if(map[i][j] == 1) {
+        				// 1인 경우 사람 좌표값 추가
+        				people.add(new int[] {i, j});
+        			} else if(map[i][j] != 0) {
+        				// 1이나 0이 아닌 경우 계단 좌표값과 길이 추가
+        				stairs.add(new int[] {i, j, map[i][j]});
+        			}
+        		}
+        	}
+        	
+        	// 결과값 저장할 변수
+        	minTime = Integer.MAX_VALUE;
+        			
+        	dfs(0);
+            
+            System.out.println("#" + test_case + " " + minTime);
+        }
+    }
+    
+    static void dfs(int depth) {
+    	// 종료조건
+    	// 사람 수만큼 다 돌았으면 종료
+    	if(depth == people.size()) {
+    		int entireTime = 0;
+    		int aTime = 0, bTime = 0;
+    		// 현재 재귀에서 계단을 다 내려오는 시간
+    		if(A.size() > 0) {
+    			aTime = doneTime(A, stairs.get(0)[2]);
+    		}
+    		
+    		if(B.size() > 0) {
+    			bTime = doneTime(B, stairs.get(1)[2]);
+    		}
+    		
+    		entireTime = Math.max(aTime, bTime);
+    		
+    		minTime = Math.min(minTime, entireTime);
+    		return;
+    	}
+    	// 재귀
+    	int[] person = people.get(depth);
+    	
+    	// 시간을 각 리스트에 저장하자
+    	// A 계단 선택 시 분기
+    	A.add(movingTime(person, stairs.get(0)));
+    	dfs(depth + 1);
+    	A.remove(A.size() - 1);
+    	
+    	// B 계단 선택 시 분기 
+    	B.add(movingTime(person, stairs.get(1)));
+    	dfs(depth + 1);
+    	B.remove(B.size() - 1);
+    }
+    
+    // 사람이 계단으로 갈 때까지 걸리는 시간
+    static int movingTime(int[] person, int[] stair) {
+        return Math.abs(person[0] - stair[0])
+                + Math.abs(person[1] - stair[1]);
+    }
+    
+    // 계단에 간 사람들이 최종적으로 계단을 모두 내려왔을 때 시간 계산하기
+    static int doneTime(List<Integer> stair, int stairLength) {
+    	// 리스트 새로 만들어서 가져오기
+    	List<Integer> inStair = new ArrayList<>(stair);
+    	// 오름차순 정렬(오는 순서 빠른 사람 먼저)
+    	Collections.sort(inStair);
+    	
+    	for(int i = 0; i < inStair.size(); i++) {
+    		// 입장하는 데 1분 소요
+    		int enterTime = inStair.get(i) + 1;
+    		if(i - 3 >= 0) {
+    			enterTime = Math.max(enterTime, inStair.get(i-3));
+    		}
+    		inStair.set(i, enterTime + stairLength);
+    	}
+    	return inStair.get(inStair.size() - 1);
+    }
+}
