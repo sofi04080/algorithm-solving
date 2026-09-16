@@ -1,0 +1,88 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+    static int N;
+    static double E;
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            N = sc.nextInt();
+            int[] ix = new int[N];
+            int[] iy = new int[N];
+
+            // 섬 좌표 입력받기
+            for(int i = 0; i < N; i++) {
+                ix[i] = sc.nextInt();
+            }
+            for(int i = 0; i < N; i++) {
+                iy[i] = sc.nextInt();
+            }
+
+            // 배열로 섬들 좌표 관리
+            double[][] islands = new double[N][2];
+            boolean[] isConnected = new boolean[N];
+            for(int i = 0; i < N; i++) {
+                    islands[i][0] = ix[i];
+                    islands[i][1] = iy[i];
+            }
+
+            // 세율 E
+            E = sc.nextDouble();
+
+            // pq 선언 및 시작점 초기화
+            PriorityQueue<Node> pq = new PriorityQueue<>();
+            pq.add(new Node(0, 0));
+
+            int connected = 0;
+            double totalCost = 0;
+            
+            while(!pq.isEmpty()) {
+                Node n = pq.poll();
+                
+                // 방문 처리
+                if(isConnected[n.v]) continue;
+                isConnected[n.v] = true;
+                totalCost += n.cost;
+                
+                // 모든 섬 연결됐다면 탈출
+                if(++connected == N) break;
+                
+                for(int i = 0; i< N; i++) {
+                    if(isConnected[i]) continue;
+                    // 거리 계산해서 큐에 넣기
+                    double dist = (islands[n.v][0] - islands[i][0]) * (islands[n.v][0] - islands[i][0]) +
+                            (islands[n.v][1] - islands[i][1]) * (islands[n.v][1] - islands[i][1]);
+                    dist = E * dist;
+                    pq.add(new Node(i, dist));
+                }
+            }
+            
+            long ans = Math.round(totalCost);
+            System.out.println("#" + test_case + " " + ans);		}
+	}
+    // 각 섬들을 하나의 노드로 생각해보자
+    static class Node implements Comparable<Node> {
+        int v;
+        double cost;
+
+        public Node(int v, double cost) {
+            this.v = v;
+            this.cost = cost;
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            long thisCost = Math.round(this.cost);
+            long oCost = Math.round(o.cost);
+            return Double.compare(this.cost, o.cost);
+        }
+    }    
+}
