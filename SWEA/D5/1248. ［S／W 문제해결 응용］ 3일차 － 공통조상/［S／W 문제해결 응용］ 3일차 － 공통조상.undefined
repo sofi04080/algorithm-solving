@@ -1,0 +1,82 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            int N = sc.nextInt(); // 정점 수
+            int M = sc.nextInt(); // 간선 수
+            int node1 = sc.nextInt(); // 정점1
+            int node2 = sc.nextInt(); // 정점2
+            Node[] tree = new Node[N+1]; // tree 선언
+
+            for(int i = 1; i <= M; i++) {
+                int val = sc.nextInt();
+                int chd = sc.nextInt();
+
+                if(tree[val] == null) {
+                    tree[val] = new Node(val);
+                }
+                // 배열 인덱스가 값 겸하긴 하니까
+                // 구조 수정은 필요해 보이는데
+                if(tree[chd] == null) {
+                    Node child = new Node(chd);
+                    tree[val].addChild(child);
+                    tree[chd] = child;
+                } else
+                	tree[val].addChild(tree[chd]);
+            }
+            int ans = 0;
+            List<Integer> parent1 = new ArrayList<>();
+            while(tree[node1].parent != null) {
+                node1 = tree[node1].parent.val;
+                parent1.add(node1);
+            }
+            while(tree[node2].parent != null) {
+                node2 = tree[node2].parent.val;
+                if(parent1.contains(node2)) {
+                    ans = node2;
+                    break;
+                }
+            }
+            int size = size(tree[ans]);
+            System.out.println("#" + test_case + " " + ans + " " + size);
+		}
+	}
+    static class Node {
+        int val;
+        // 가지고 있으면 루트 X
+        Node parent;
+        // 자식 노드
+        List<Node> child = new ArrayList<>();
+
+        Node(int val) {
+            this.val = val;
+        }
+
+        void addChild(Node child) {
+            this.child.add(child);
+            child.parent = this;
+        }
+    }
+    
+    // 서브트리 구하기 재귀
+    static int size(Node node) {
+        int size = 1;
+        if(!node.child.isEmpty()) {
+            for (Node child : node.child) {
+                size += size(child);
+            }
+        }
+        return size;
+    }
+}

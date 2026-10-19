@@ -1,0 +1,81 @@
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            int N = sc.nextInt();
+            MaxHeap heap = new MaxHeap();
+            System.out.print("#" + test_case + " ");
+            for(int i = 0; i < N; i++) {
+                switch (sc.nextInt()){
+                    case 1:
+                        heap.offer(sc.nextInt());
+                        break;
+                    case 2:
+                        System.out.print(heap.poll() + " ");
+                        break;
+                }
+            }
+            System.out.println();
+		}
+	}
+    
+    static class MaxHeap {
+        private int heap[] = new int[100001];
+        private int size;
+
+
+        void offer(int item) {
+            heap[++size] = item;
+            int child = size;
+            while(child > 1) {
+                int parent = child/2;
+                if(heap[parent] < heap[child]) {
+                    swap(parent, child);
+                    child = parent;
+                } else break;
+            }
+        }
+
+        void swap(int parent, int child) {
+            int tmp = heap[parent];
+            heap[parent] = heap[child];
+            heap[child] = tmp;
+        }
+
+        int poll() {
+            if(size == 0) {
+                return -1;
+            }
+            int maxValue = heap[1];
+            heap[1] = heap[size--];
+
+            int parent = 1;
+
+            while(parent * 2 <= size) { // 자식 체크
+                int child = parent * 2;
+
+                // 자식 둘 중 부모보다 큰 값 없으면 완료
+				if(child+1 <= size && heap[child] < heap[child+1]) {
+					child = child + 1;
+				}
+				if(heap[parent] >= heap[child]) {
+					break;
+				}
+				swap(parent, child);
+				parent = child;
+            }
+            return maxValue;
+        }
+    }
+}

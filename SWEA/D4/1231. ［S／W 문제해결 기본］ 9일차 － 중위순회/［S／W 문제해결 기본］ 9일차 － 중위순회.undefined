@@ -1,0 +1,93 @@
+
+import java.util.*;
+import java.io.*;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+		for(int test_case = 1; test_case <= 10; test_case++)
+		{
+			// 입력 받을 줄
+            int N = Integer.parseInt(br.readLine());
+            String[] nodes = new String[N];
+            for (int i = 0; i < N; i++) {
+                nodes[i] = br.readLine();
+            }
+
+            Tree tree = new Tree();
+
+            for (String node : nodes) {
+                String[] elements = node.split(" ");
+                int p = Integer.parseInt(elements[0]);
+                tree.insert(p, toNode(elements));
+            }
+
+            System.out.print("#" + test_case + " ");
+            tree.inOrder(1);
+            System.out.println();
+		}
+	}
+    
+        private static TreeNode toNode(String[] elements) {
+        int left = 0;
+        int right = 0;
+        char val = elements[1].charAt(0);
+
+        if (elements.length > 3) {
+            left = Integer.parseInt(elements[2]);
+            right = Integer.parseInt(elements[3]);
+            return new TreeNode(val, left, right);
+        }
+        if (elements.length > 2) {
+            left = Integer.parseInt(elements[2]);
+            return new TreeNode(val, left);
+        }
+        return new TreeNode(val);
+    }
+
+    static class TreeNode {
+        char val;
+        int right;
+        int left;
+
+        TreeNode(char val) {
+            this.val = val;
+        }
+
+        TreeNode(char val, int left) {
+            this.val = val;
+            this.left = left;
+        }
+
+        TreeNode(char val, int left, int right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    static class Tree {
+        Map<Integer, TreeNode> tree = new HashMap<>();
+
+        // 트리 만들기
+        void insert(int p, TreeNode node) {
+            tree.put(p, node);
+        }
+
+        // 중위 순회
+        void inOrder(int p) {
+            if (p == 0 || !tree.containsKey(p)) {
+                return;
+            }
+
+            TreeNode node = tree.get(p);
+
+            inOrder(node.left);
+            System.out.print(node.val);
+            inOrder(node.right);
+        }
+    }
+}

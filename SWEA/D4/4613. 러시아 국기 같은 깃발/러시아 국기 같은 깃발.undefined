@@ -1,0 +1,63 @@
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            int N = sc.nextInt();
+            int M = sc.nextInt();
+            char[][] flag = new char[N][M];
+
+
+            for(int i = 0; i < N; i++) {
+                String flagLine = sc.next();
+                flag[i] = flagLine.toCharArray();
+            }
+
+            int min = Integer.MAX_VALUE;
+
+            // 49 개 구분선 중 2개 고르기
+            for(int i = 0; i < N - 2; i++) {
+                for(int j = i + 1; j < N - 1; j++) {
+                    int count = 0;
+                    // 흰색 구역
+                    for(int r = 0; r <= i; r++) {
+                        for(int c = 0; c < M; c ++) {
+                            if(flag[r][c] != 'W') {
+                                count++;
+                            }
+                        }
+                    }
+                    // 파란색 구역
+                    for(int r = i + 1; r <= j; r++) {
+                        for(int c = 0; c < M; c ++) {
+                            if(flag[r][c] != 'B') {
+                                count++;
+                            }
+                        }
+                    }
+                    // 빨간색 구역
+                    for(int r = j + 1; r < N; r++) {
+                        for(int c = 0; c < M; c ++) {
+                            if(flag[r][c] != 'R') {
+                                count++;
+                            }
+                        }
+                    }
+                    if(count < min)
+                        min = count;
+                }
+            }
+            System.out.println("#" + test_case + " " + min);
+		}
+	}
+}

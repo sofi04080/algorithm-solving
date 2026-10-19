@@ -1,0 +1,51 @@
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+        
+		for(int test_case = 1; test_case <= 10; test_case++)
+		{
+            int T = sc.nextInt();
+		    int[][] array = new int[100][100];
+            for(int i = 0; i < 100; i++){
+                for(int j = 0; j < 100; j++) {
+                    array[i][j] = sc.nextInt();
+                }
+            }
+
+            int max = 0;
+
+            // 행과 열
+            for(int i = 0; i < 100; i++){
+                int rowSum = 0;
+                int colSum = 0;
+                for(int j = 0; j < 100; j++) {
+                    rowSum += array[i][j];
+                    colSum += array[j][i];
+                }
+                if(rowSum >= max)
+                max = rowSum;
+                if(colSum >= max)
+                max = colSum;
+            }
+
+            // 대각
+            int diagonal = 0, antiDiagonal = 0;
+            for(int i = 0; i < 100; i++){
+                diagonal += array[i][i];
+                antiDiagonal += array[i][99-i];
+            }
+            if(diagonal >= max)
+                max = diagonal;
+            if(antiDiagonal >= max)
+                max = antiDiagonal;
+
+            System.out.println("#" + test_case + " " + max);	
+		}
+	}
+}

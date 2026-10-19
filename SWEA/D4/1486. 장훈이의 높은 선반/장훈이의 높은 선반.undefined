@@ -1,0 +1,47 @@
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+    static int N, B, diff;
+    static int[] employees;    
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+        
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            N = sc.nextInt();
+            B = sc.nextInt();
+
+            employees = new int[N];
+
+            for(int i = 0; i < N; i++ ) {
+                employees[i] = sc.nextInt();
+            }
+
+            diff = Integer.MAX_VALUE;
+
+            backSet(0, 0);
+
+            System.out.println("#" + test_case + " " + diff);			
+		}
+	}
+    static void backSet(int idx, int sum) {
+        // 합계가 원하는 높이를 넘겼으니 차이 계산하고 종료
+        if (sum >= B) {
+            if(diff >= sum - B)
+                diff = sum - B;
+            return;
+        }
+        // Base
+        if(N == idx)
+            return;
+
+        backSet(idx + 1, sum + employees[idx]);
+        backSet(idx + 1, sum);
+    }
+}

@@ -1,0 +1,148 @@
+
+import java.util.*;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+
+		for(int test_case = 1; test_case <= 10; test_case++)
+		{
+			 DoublyLinkedList dList = new DoublyLinkedList();
+
+            // 암호문 길이
+            int N = sc.nextInt();
+            for(int i = 0; i < N; i++){
+                dList.add(i, sc.nextInt());
+            }
+            int M = sc.nextInt();
+            Order[] orders = new Order[M];
+            for(int i = 0; i < M; i++){
+                orders[i] = new Order();
+                orders[i].insert = sc.next();
+                orders[i].pos = sc.nextInt();
+                orders[i].times = sc.nextInt();
+                orders[i].num = new int[orders[i].times];
+                for(int j = 0; j < orders[i].times; j++) {
+                    orders[i].num[j] = sc.nextInt();
+                }
+            }
+
+            for(int i = 0; i < M; i++){
+                for(int j = 0; j < orders[i].times; j++)
+                    dList.add(orders[i].pos + j, orders[i].num[j]);
+            }
+
+            System.out.print("#" + test_case + " ");
+            for(int i = 0; i < Math.min(10, dList.size); i++){
+                System.out.print(dList.get(i).data + " ");
+            }
+            System.out.println();
+		}
+	}
+        // 명령문 받기용 객체
+    static class Order{
+        String insert;
+        int pos;
+        int times;
+        int[] num;
+    }
+    
+    // 이중 연결 리스트 구현해보기
+    static class DNode {
+        int data;
+        DNode prev;
+        DNode next;
+
+        DNode(int data) {
+            this.data = data;
+        }
+    }
+
+    static class DoublyLinkedList {
+        private DNode head;
+        private DNode tail;
+        private int size;
+
+        void addFirst(int item) {
+            DNode dNode = new DNode(item);
+            dNode.next = head;
+            if (head != null)
+                head.prev = dNode;
+            else
+                tail = dNode;
+            head = dNode;
+            size++;
+        }
+
+        void addLast(int item) {
+            if (isEmpty()) {
+                addFirst(item);
+                return;
+            }
+            DNode dNode = new DNode(item);
+            tail.next = dNode;
+            dNode.prev = tail;
+            tail = dNode;
+            size++;
+        }
+
+        void add(int index, int item) {
+            if (index < 0 || index > size) {
+                throw new ArrayIndexOutOfBoundsException("인덱스 범위 초과");
+            } else if (index == size) {
+                addLast(item);
+                return;
+            } else if (index == 0) {
+                addFirst(item);
+                return;
+            }
+
+            DNode dNode = new DNode(item);
+            DNode target = get(index);
+            DNode preNode = target.prev;
+
+            target.prev = dNode;
+            dNode.next = target;
+            dNode.prev = preNode;
+            preNode.next = dNode;
+
+            size++;
+        }
+
+        int remove(int idx) {
+            if (idx < 0 || idx >= size) {
+                throw new IndexOutOfBoundsException("인덱스 범위 초과: " + idx);
+            }
+            DNode target = get(idx);
+            DNode preNode = target.prev;
+            preNode.next = target.next;
+            preNode.next.prev = preNode;
+            target.next = null;
+            size--;
+            return target.data;
+        }
+
+        DNode get(int index) {
+            if (index >= size / 2) {
+                DNode back = tail;
+                for (int i = size - 1; i > index; i--) {
+                    back = back.prev;
+                }
+                return back;
+            } else {
+                DNode front = head;
+                for (int i = 0; i < index; i++)
+                    front = front.next;
+                return front;
+            }
+        }
+
+        boolean isEmpty() {
+            return size == 0;
+        }
+    }
+}

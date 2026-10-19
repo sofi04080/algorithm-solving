@@ -1,0 +1,47 @@
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+            int N = sc.nextInt();
+            int[] numbers = new int[N];
+            for(int i = 0; i < N; i++){
+                numbers[i] = sc.nextInt();
+            }
+
+            selectionSort(numbers);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("#").append(test_case);
+            for (int num : numbers) {
+                sb.append(" ").append(num);
+            }
+            System.out.println(sb);
+		}
+	}
+    
+    static void selectionSort(int[] numbers){
+        int N = numbers.length;
+        for (int i = 0; i < N; i++) {
+            int min = i;
+            for (int j = i + 1; j < N; j++) {
+                if(numbers[min] > numbers[j]){
+                    min = j;
+                }
+            }
+
+            int tmp = numbers[min];
+            numbers[min] = numbers[i];
+            numbers[i] = tmp;
+        }
+    }
+}
